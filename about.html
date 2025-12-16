@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Butterfly Garden</title>
+
+<style>
+body{
+  background:#ccffcc;
+  font-family:Comic Sans MS;
+  text-align:center;
+}
+
+.garden{
+  height:300px;
+  border:5px dashed green;
+  margin:20px;
+  position:relative;
+}
+
+.butterfly{
+  position:absolute;
+  font-size:50px;
+  animation: float 4s infinite alternate;
+}
+
+@keyframes float{
+  from{transform:translateY(0);}
+  to{transform:translateY(-80px);}
+}
+
+.flower{
+  font-size:40px;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🌸 Butterfly case 🌸</h1>
+<nav class="menu">
+  <a href="index.html">Welcome</a>
+  <a href="types.html">Types</a>
+  <a href="life.html">Life</a>
+  <a href="garden.html">Garden</a>
+  <a href="art.html">Art</a>
+  <a href="game.html">Game</a>
+</nav>
+
+<div class="garden">
+  <div class="butterfly" style="left:20%;top:60%">🦋</div>
+  <div class="butterfly" style="left:60%;top:70%">🦋</div>
+</div>
+
+<p class="flower">🌼 🌷 🌻 🌸</p>
+
+</body>
+</html>

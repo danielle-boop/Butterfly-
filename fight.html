@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Butterfly vs Human Battle</title>
+<style>
+body{
+  margin:0;
+  overflow:hidden;
+  background: linear-gradient(#a8edea,#fed6e3);
+}
+canvas{display:block;}
+#score{
+  position:absolute;
+  top:10px;
+  left:10px;
+  font-size:20px;
+  font-family:sans-serif;
+  color:#333;
+}
+</style>
+</head>
+<body>
+<div id="score">Score: 0</div>
+<canvas id="canvas"></canvas>
+<script>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let score = 0;
+
+// Human controlled by arrow keys
+class Human {
+  constructor() {
+    this.x = canvas.width/2;
+    this.y = canvas.height - 100;
+    this.size = 50;
+    this.speed = 5;
+  }
+  draw() {
+    ctx.fillStyle = "blue";
+    ctx.fillRect(this.x, this.y, this.size, this.size);
+  }
+  move(dir) {
+    if(dir==="left" && this.x>0) this.x -= this.speed;
+    if(dir==="right" && this.x+this.size<canvas.width) this.x += this.speed;
+    if(dir==="up" && this.y>0) this.y -= this.speed;
+    if(dir==="down" && this.y+this.size<canvas.height) this.y += this.speed;
+  }
+}
+
+let human = new Human();
+
+// Butterflies
+class Butterfly {
+  constructor() {
+    this.x = Math.random()*canvas.width;
+    this.y = Math.random()*canvas.height/2;
+    this.size = 30 + Math.random()*20;
+    this.dx = Math.random()*2 + 1;
+    this.dy = Math.random()*1.5;
+  }
+  draw() {
+    ctx.font = this.size + "px serif";
+    ctx.fillText("🦋", this.x, this.y);
+  }
+  move() {
+    this.x += this.dx;
+    this.y += Math.sin(this.x/50)*2;
+    if(this.x>canvas.width) this.x=0;
+    if(this.y>canvas.height) this.y=canvas.height/2;
+  }
+}
+
+let butterflies = [];
+for(let i=0;i<10;i++) butterflies.push(new Butterfly());
+
+// Keyboard control
+let keys = {};
+window.addEventListener("keydown", e=>keys[e.key]=true);
+window.addEventListener("keyup", e=>keys[e.key]=false);
+
+// Detect collisions
+function checkCollisions() {
+  butterflies.forEach((b,i)=>{
+    if(human.x < b.x + b.size &&
+       human.x + human.size > b.x &&
+       human.y < b.y + b.size &&
+       human.y + human.size > b.y){
+      score += 1;
+      document.getElementById("score").innerText = "Score: "+score;
+      // Reset butterfly
+      b.x = Math.random()*canvas.width;
+      b.y = Math.random()*canvas.height/2;
+    }
+  });
+}
+
+function animate(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  // Move human
+  if(keys["ArrowLeft"]) human.move("left");
+  if(keys["ArrowRight"]) human.move("right");
+  if(keys["ArrowUp"]) human.move("up");
+  if(keys["ArrowDown"]) human.move("down");
+  human.draw();
+
+  // Move butterflies
+  butterflies.forEach(b=>{
+    b.move();
+    b.draw();
+  });
+
+  checkCollisions();
+
+  requestAnimationFrame(animate);
+}
+
+animate();
+</script>
+</body>
+</html>

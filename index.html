@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Butterfly Welcome</title>
+
+<style>
+body{
+  background: linear-gradient(#ffd6f5,#e0f7ff);
+  font-family: Comic Sans MS;
+  text-align:center;
+  overflow:hidden;
+}
+
+h1{
+  color:purple;
+  text-shadow:0 0 15px pink;
+}
+
+.butterfly{
+  font-size:80px;
+  position:absolute;
+  animation: fly 6s infinite alternate;
+}
+
+@keyframes fly{
+  from{left:0; top:40%;}
+  to{left:80%; top:20%;}
+}
+
+.sparkle{
+  width:10px;
+  height:10px;
+  background:gold;
+  border-radius:50%;
+  position:absolute;
+  animation: sparkle 2s infinite;
+}
+
+@keyframes sparkle{
+  0%{opacity:0;}
+  50%{opacity:1;}
+  100%{opacity:0;}
+}
+</style>
+</head>
+
+<body>
+
+<h1>🦋 Welcome to Butterfly World 🦋</h1>
+<p>So cute! So magical!</p>
+<p>here are the other things about butterflies</p>
+<nav class="menu">
+  <a href="index.html">Welcome</a>
+  <a href="types.html">Types</a>
+  <a href="life.html">Life</a>
+  <a href="garden.html">Garden</a>
+  <a href="art.html">Art</a>
+  <a href="game.html">Game</a>
+</nav>
+
+<div class="butterfly">🦋</div>
+<div class="sparkle" style="top:20%;left:30%"></div>
+<div class="sparkle" style="top:60%;left:70%"></div>
+
+</body>
+</html>

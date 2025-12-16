@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Butterfly Life Cycle</title>
+<style>
+body {
+  background: linear-gradient(#cce7ff, #fff);
+  font-family: Comic Sans MS, cursive;
+  text-align: center;
+  overflow-x: hidden;
+}
+h1 { font-size: 3em; color: purple; text-shadow: 0 0 10px pink, 0 0 20px lavender; animation: glow 2s infinite alternate; }
+@keyframes glow { from {text-shadow:0 0 10px pink;} to {text-shadow:0 0 30px gold;} }
+
+.menu a {
+  padding: 10px;
+  text-decoration: none;
+  color: purple;
+  font-weight: bold;
+  background: pink;
+  border-radius: 20px;
+  margin: 5px;
+  transition: transform 0.3s;
+}
+.menu a:hover { transform: scale(1.2) rotate(-3deg); background: hotpink; }
+
+.butterfly { font-size: 60px; position: relative; animation: fly 6s infinite alternate; }
+@keyframes fly { 0% { left:0px; top:0px;} 50%{left:200px; top:50px;} 100%{left:0px; top:0px;} }
+
+.sparkle { position: fixed; width: 10px; height: 10px; border-radius: 50%; animation: sparkle 2s infinite; opacity:0.7; }
+.sparkle:nth-child(1){top:20%; left:10%; background:pink;}
+.sparkle:nth-child(2){top:50%; left:80%; background:gold;}
+.sparkle:nth-child(3){top:80%; left:40%; background:lavender;}
+@keyframes sparkle {0%{transform:scale(0.5);opacity:0.3;}100%{transform:scale(1.5);opacity:1;}}
+
+.bubble { position: fixed; bottom:-50px; width:40px; height:40px; background: rgba(173,216,230,0.6); border-radius:50%; animation:bubble 6s infinite; }
+.small{width:25px;height:25px;left:70%;}
+.tiny{width:15px;height:15px;left:30%;}
+@keyframes bubble{to{transform:translateY(-700px);opacity:0;}}
+
+footer{margin-top:40px;font-size:20px;color:purple;text-shadow:0 0 10px pink;}
+</style>
+</head>
+<body>
+
+<nav class="menu">
+  <a href="index.html">Welcome</a>
+  <a href="types.html">Types</a>
+  <a href="life.html">Life</a>
+  <a href="garden.html">Garden</a>
+  <a href="art.html">Art</a>
+  <a href="game.html">Game</a>
+</nav>
+
+<h1>🦋 Butterfly Life Cycle</h1>
+
+<div class="butterfly">🐛</div>
+<div class="butterfly" style="animation-delay:5s;">🟤</div>
+<div class="butterfly" style="animation-delay:2s;">🦋</div>
+<div class="butterfly" style="animation-delay:4s;">🥚</div>
+
+
+<div class="sparkle"></div>
+<div class="sparkle"></div>
+<div class="sparkle"></div>
+
+<div class="bubble"></div>
+<div class="bubble small"></div>
+<div class="bubble tiny"></div>
+
+<p>Egg → Caterpillar → Chrysalis → Butterfly</p>
+
+<footer>Made with 💖🦋✨</footer>
+
+</body>
+</html>

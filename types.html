@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Butterfly Game</title>
+
+<style>
+body{
+  background:#e6ccff;
+  font-family:Comic Sans MS;
+  text-align:center;
+}
+
+#butterfly{
+  font-size:80px;
+  cursor:pointer;
+  position:absolute;
+}
+
+.score{
+  font-size:24px;
+  color:purple;
+}
+</style>
+</head>
+
+<body>
+
+<h1>🦋 Catch the Butterfly 🦋</h1>
+<p class="score">Score: <span id="score">0</span></p>
+<nav class="menu">
+  <a href="index.html">Welcome</a>
+  <a href="types.html">Types</a>
+  <a href="life.html">Life</a>
+  <a href="garden.html">Garden</a>
+  <a href="art.html">Art</a>
+  <a href="game.html">Game</a>
+</nav>
+
+<div id="butterfly">🦋</div>
+
+<script>
+let score=0;
+const butterfly=document.getElementById("butterfly");
+const scoreText=document.getElementById("score");
+
+function move(){
+  butterfly.style.left=Math.random()*80+"%";
+  butterfly.style.top=Math.random()*60+"%";
+}
+move();
+
+butterfly.onclick=()=>{
+  score++;
+  scoreText.innerText=score;
+  move();
+};
+</script>
+
+</body>
+</html>

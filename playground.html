@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Butterfly Playground</title>
+<style>
+body{
+  margin:0;
+  overflow:hidden;
+  background: linear-gradient(#a8edea,#fed6e3);
+}
+canvas{display:block;}
+</style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<script>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+// Butterflies
+class Butterfly {
+  constructor() {
+    this.x = Math.random()*canvas.width;
+    this.y = Math.random()*canvas.height/2;
+    this.dx = 1+Math.random()*2;
+    this.dy = Math.random()*1.5;
+    this.size = 30+Math.random()*20;
+  }
+  draw() {
+    ctx.font = this.size + "px serif";
+    ctx.fillText("🦋", this.x, this.y);
+  }
+  move() {
+    this.x += this.dx;
+    this.y += Math.sin(this.x/50)*2;
+    if(this.x>canvas.width) this.x=0;
+    if(this.y>canvas.height) this.y=canvas.height/2;
+  }
+}
+
+let butterflies = [];
+for(let i=0;i<10;i++) butterflies.push(new Butterfly());
+
+// Flowers
+class Flower {
+  constructor(x,y){
+    this.x=x;
+    this.y=y;
+    this.bloomed=false;
+  }
+  draw(){
+    ctx.beginPath();
+    ctx.fillStyle = this.bloomed ? "pink" : "lightpink";
+    for(let i=0;i<5;i++){
+      let angle=i*(Math.PI*2/5);
+      ctx.ellipse(this.x+Math.cos(angle)*10,this.y+Math.sin(angle)*10,10,5,0,0,Math.PI*2);
+      ctx.fill();
+    }
+    ctx.fillStyle="yellow";
+    ctx.beginPath();
+    ctx.arc(this.x,this.y,5,0,Math.PI*2);
+    ctx.fill();
+  }
+}
+
+let flowers = [];
+for(let i=0;i<7;i++) flowers.push(new Flower(Math.random()*canvas.width,canvas.height-100+Math.random()*50));
+
+// Sparkles
+let sparkles = [];
+class Sparkle {
+  constructor(x,y){
+    this.x=x; this.y=y;
+    this.life=20;
+    this.dx=Math.random()*2-1;
+    this.dy=Math.random()*2-1;
+    this.size=2+Math.random()*3;
+  }
+  draw(){
+    ctx.fillStyle="rgba(255,255,255,0.8)";
+    ctx.beginPath();
+    ctx.arc(this.x,this.y,this.size,0,Math.PI*2);
+    ctx.fill();
+    this.x += this.dx;
+    this.y += this.dy;
+    this.life--;
+  }
+}
+
+// Animate
+function animate(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  // Draw flowers
+  flowers.forEach(f=>f.draw());
+
+  // Move & draw butterflies
+  butterflies.forEach(b=>{
+    b.move();
+    b.draw();
+    // Leave sparkles behind
+    sparkles.push(new Sparkle(b.x,b.y));
+  });
+
+  // Draw sparkles
+  sparkles.forEach((s,i)=>{
+    s.draw();
+    if(s.life<=0) sparkles.splice(i,1);
+  });
+
+  requestAnimationFrame(animate);
+}
+
+animate();
+
+// Click flowers to bloom
+canvas.addEventListener("click", e=>{
+  flowers.forEach(f=>{
+    let dx = f.x - e.offsetX;
+    let dy = f.y - e.offsetY;
+    if(Math.hypot(dx,dy)<30) f.bloomed=true;
+  });
+});
+</script>
+</body>
+</html>
+

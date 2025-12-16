@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Weather Playground</title>
+<style>
+body{
+  margin:0;
+  overflow:hidden;
+  background: linear-gradient(#87CEEB,#f0f8ff); /* default sky blue */
+  font-family: sans-serif;
+}
+canvas{display:block;}
+#controls{
+  position:absolute;
+  top:10px;
+  left:10px;
+  background: rgba(255,255,255,0.7);
+  padding:10px;
+  border-radius:8px;
+}
+button{
+  margin:5px;
+  padding:5px 10px;
+  font-size:16px;
+  cursor:pointer;
+}
+</style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div id="controls">
+  <button onclick="setWeather('sunny')">Sunny</button>
+  <button onclick="setWeather('cloudy')">Cloudy</button>
+  <button onclick="setWeather('rainy')">Rainy</button>
+  <button onclick="setWeather('snowing')">Snowing</button>
+</div>
+<script>
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let weather = "sunny"; // default
+
+// Sun
+class Sun {
+  constructor() {
+    this.x = canvas.width - 100;
+    this.y = 100;
+    this.radius = 50;
+  }
+  draw() {
+    ctx.fillStyle = "yellow";
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.radius, 0, Math.PI*2);
+    ctx.fill();
+  }
+}
+
+// Clouds
+class Cloud {
+  constructor() {
+    this.x = Math.random() * canvas.width;
+    this.y = Math.random() * canvas.height/3;
+    this.size = 50 + Math.random()*50;
+    this.speed = 0.5 + Math.random();
+  }
+  draw() {
+    ctx.fillStyle = "rgba(255,255,255,0.8)";
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.size, 0, Math.PI*2);
+    ctx.arc(this.x + this.size*0.6, this.y + 10, this.size*0.7, 0, Math.PI*2);
+    ctx.arc(this.x - this.size*0.6, this.y + 10, this.size*0.7, 0, Math.PI*2);
+    ctx.fill();
+  }
+  move() {
+    this.x += this.speed;
+    if(this.x > canvas.width + 100) this.x = -100;
+  }
+}
+
+// Rain
+class Raindrop {
+  constructor() {
+    this.x = Math.random() * canvas.width;
+    this.y = Math.random() * canvas.height;
+    this.length = 10 + Math.random() * 10;
+    this.speed = 2 + Math.random()*3;
+  }
+  draw() {
+    ctx.strokeStyle = "rgba(0,0,255,0.5)";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(this.x, this.y);
+    ctx.lineTo(this.x, this.y + this.length);
+    ctx.stroke();
+  }
+  move() {
+    this.y += this.speed;
+    if(this.y > canvas.height) {
+      this.y = -this.length;
+      this.x = Math.random() * canvas.width;
+    }
+  }
+}
+
+// Snow
+class Snowflake {
+  constructor() {
+    this.x = Math.random() * canvas.width;
+    this.y = Math.random() * canvas.height;
+    this.radius = 2 + Math.random() * 3;
+    this.speed = 0.5 + Math.random();
+  }
+  draw() {
+    ctx.fillStyle = "white";
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, this.radius, 0, Math.PI*2);
+    ctx.fill();
+  }
+  move() {
+    this.y += this.speed;
+    this.x += Math.sin(this.y/20);
+    if(this.y > canvas.height) {
+      this.y = -this.radius;
+      this.x = Math.random() * canvas.width;
+    }
+  }
+}
+
+let sun = new Sun();
+let clouds = [];
+let raindrops = [];
+let snowflakes = [];
+
+function setWeather(type){
+  weather = type;
+  clouds = [];
+  raindrops = [];
+  snowflakes = [];
+  // Initialize weather elements
+  if(weather === "cloudy" || weather === "rainy") {
+    for(let i=0;i<5;i++) clouds.push(new Cloud());
+  }
+  if(weather === "rainy") {
+    for(let i=0;i<100;i++) raindrops.push(new Raindrop());
+  }
+  if(weather === "snowing") {
+    for(let i=0;i<100;i++) snowflakes.push(new Snowflake());
+  }
+}
+
+function animate(){
+  // Background
+  if(weather === "sunny") ctx.fillStyle = "linear-gradient(#87CEEB,#f0f8ff)";
+  else if(weather === "cloudy") ctx.fillStyle = "#b0c4de";
+  else if(weather === "rainy") ctx.fillStyle = "#778899";
+  else if(weather === "snowing") ctx.fillStyle = "#a9d0f5";
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+
+  // Sun
+  if(weather === "sunny" || weather === "cloudy") sun.draw();
+
+  // Clouds
+  clouds.forEach(c=>{
+    c.move();
+    c.draw();
+  });
+
+  // Rain
+  raindrops.forEach(r=>{
+    r.move();
+    r.draw();
+  });
+
+  // Snow
+  snowflakes.forEach(s=>{
+    s.move();
+    s.draw();
+  });
+
+  requestAnimationFrame(animate);
+}
+
+// Start default weather
+setWeather("sunny");
+animate();
+</script>
+</body>
+</html>
+

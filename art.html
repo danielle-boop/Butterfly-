@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Butterfly Art Studio</title>
+<style>
+body{
+  background: linear-gradient(#c7ecee,#f9ca24);
+  text-align:center;
+  font-family: Comic Sans MS, cursive;
+}
+h1{color:#6c5ce7}
+canvas{
+  background:white;
+  border:4px dashed #ff7675;
+  cursor:crosshair;
+}
+button{
+  margin:4px;
+  padding:8px 12px;
+  border-radius:12px;
+  border:none;
+  background:#74b9ff;
+  color:white;
+  font-size:15px;
+}
+input[type=color]{width:40px;height:40px;border:none;}
+input[type=range]{width:110px;}
+</style>
+</head>
+
+<body>
+
+<h1>🦋 Butterfly Art Studio 🌈</h1>
+
+<div>
+🎨 <input type="color" id="color">
+🖌️ <input type="range" id="size" min="2" max="30" value="10">
+
+<br><br>
+
+<button onclick="setTool('draw')">✏️ Draw</button>
+<button onclick="setTool('heart')">❤️ Heart</button>
+<button onclick="setTool('star')">⭐ Star</button>
+<button onclick="setTool('butterfly')">🦋 Sticker</button>
+<button onclick="setTool('flower')">🌸 Sticker</button>
+<button onclick="toggleRainbow()">🌈 Rainbow</button>
+
+<br><br>
+
+<button onclick="undo()">Undo</button>
+<button onclick="redo()">Redo</button>
+<button onclick="clearCanvas()">Clear</button>
+<button onclick="save()">Save 📸</button>
+</div>
+
+<br>
+<canvas id="c" width="600" height="400"></canvas>
+
+<script>
+const c=document.getElementById("c");
+const ctx=c.getContext("2d");
+
+let tool="draw",drawing=false,startX,startY;
+let rainbow=false;
+let history=[],redoStack=[];
+
+function saveState(){
+  history.push(c.toDataURL());
+  redoStack=[];
+}
+
+function setTool(t){ tool=t; }
+function toggleRainbow(){ rainbow=!rainbow; }
+
+function getFill(x1,y1,x2,y2){
+  if(!rainbow) return document.getElementById("color").value;
+  let g = ctx.createLinearGradient(x1,y1,x2,y2);
+  g.addColorStop(0,"red");
+  g.addColorStop(.2,"orange");
+  g.addColorStop(.4,"yellow");
+  g.addColorStop(.6,"green");
+  g.addColorStop(.8,"blue");
+  g.addColorStop(1,"purple");
+  return g;
+}
+
+c.onmousedown = e =>{
+  drawing = true;
+  startX = e.offsetX;
+  startY = e.offsetY;
+  saveState();
+};
+
+c.onmouseup = e =>{
+  if(!drawing) return;
+  drawing = false;
+
+  let x = e.offsetX, y = e.offsetY;
+  let size = document.getElementById("size").value;
+  let color = document.getElementById("color").value;
+
+  ctx.lineWidth = size;
+  ctx.strokeStyle = rainbow ? getFill(startX,startY,x,y) : color;
+  ctx.fillStyle   = rainbow ? getFill(startX,startY,x,y) : color;
+
+  if(tool === "heart"){
+    ctx.beginPath();
+    ctx.moveTo(startX,startY);
+    ctx.bezierCurveTo(startX-30,startY-30,startX-60,startY+20,startX,startY+60);
+    ctx.bezierCurveTo(startX+60,startY+20,startX+30,startY-30,startX,startY);
+    ctx.fill(); ctx.stroke();
+  }
+
+  if(tool === "star"){
+    let r = 40;
+    ctx.beginPath();
+    for(let i=0;i<5;i++){
+      ctx.lineTo(startX+Math.cos((18+i*72)*Math.PI/180)*r,
+                 startY-Math.sin((18+i*72)*Math.PI/180)*r);
+      ctx.lineTo(startX+Math.cos((54+i*72)*Math.PI/180)*r/2,
+                 startY-Math.sin((54+i*72)*Math.PI/180)*r/2);
+    }
+    ctx.closePath();
+    ctx.fill(); ctx.stroke();
+  }
+
+  if(tool === "butterfly"){
+    ctx.font = "60px serif";
+    ctx.fillText("🦋", x-30, y+30);
+  }
+
+  if(tool === "flower"){
+    ctx.font = "60px serif";
+    ctx.fillText("🌸", x-30, y+30);
+  }
+
+  ctx.beginPath();
+};
+
+c.onmousemove = e =>{
+  if(!drawing || tool!=="draw") return;
+
+  ctx.lineWidth = document.getElementById("size").value;
+  ctx.lineCap = "round";
+
+  ctx.strokeStyle = rainbow 
+    ? getFill(startX,startY,e.offsetX,e.offsetY)
+    : document.getElementById("color").value;
+
+  ctx.lineTo(e.offsetX,e.offsetY);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(e.offsetX,e.offsetY);
+};
+
+function undo(){
+  if(!history.length) return;
+  redoStack.push(c.toDataURL());
+  let img = new Image();
+  img.src = history.pop();
+  img.onload = ()=>ctx.drawImage(img,0,0);
+}
+
+function redo(){
+  if(!redoStack.length) return;
+  history.push(c.toDataURL());
+  let img = new Image();
+  img.src = redoStack.pop();
+  img.onload = ()=>ctx.drawImage(img,0,0);
+}
+
+function clearCanvas(){
+  saveState();
+  ctx.clearRect(0,0,c.width,c.height);
+}
+
+function save(){
+  let a = document.createElement("a");
+  a.download = "shiloh_art.png";
+  a.href = c.toDataURL();
+  a.click();
+}
+</script>
+
+</body>
+</html>
